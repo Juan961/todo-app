@@ -1,148 +1,133 @@
 <template>
-  <main>
-    <px-task-form v-if="showModal" @closeModal="toggleModal" />
 
-    <px-filter />
-    
-    <section class="tasks">
-      <div class="task" :style="{background: task.color}" v-for="task in tasks" :key="task.id">
-        <p class="task__title"> {{ task.title }} </p>
-        <p> Max date: {{ task.date }} </p>
+  <div class="modal">
+    <div class="task-modal" :style="{background: value.color_task}">
+      <i @click="closeTask" class='bx bx-x'></i>
+      <div class="task" >
+        <h2>{{ value.title_task }}</h2>
+        <p>Description: {{ value.desc_task }} </p>
+        <p>Date: {{ value.date_task}} </p>
+        <p> {{value.done_task ? "Finished" : "Unfinished"}} </p>
+        
+        <button v-if="!value.done_task" @click="markAsFinished">Mark as finished</button>
+
+        <button @click="delete_task">Delete</button>
+
       </div>
-    </section>
+    </div>
 
-    <px-new-task @openModal="toggleModal"/>
-  </main>
+  </div>
 </template>
 
 <script>
-import PxFilter from '@/components/todo/PxFilter'
-import PxNewTask from '@/components/todo/PxNewTask'
-import PxTaskForm from '@/components/todo/PxTaskForm'
+import { getTask, updateTask, deleteTask } from '@/logic/tasks.logic.js'
 
 export default {
-  name: 'PxTask',
-  components: {
-    PxFilter,
-    PxNewTask,
-    PxTaskForm
-  },
+  name:'PxTask',
   data(){
     return {
-      showModal: false,
-      tasks: [
-        {
-          id:1,
-          title:"Todo",
-          desc:"Todo des",
-          color:"#4bb1f8",
-          date: "30-12-2021"
-        },
-        {
-          id: 2,
-          title: "Who the Hell Is Juliette? (¿Quién diablos es Juliette?)",
-          desc: "Unsp trochan fx unsp femr, 7thQ",
-          color: "#53db89",
-          date: "30-12-2021"
-        },
-        {
-          id: 3,
-          title: "Saving Shiloh",
-          desc: "Pulmonary edema due to chemicals, gases, fumes and vapors",
-          color: "#f98a4b",
-          date: "30-12-2021"
-        }, {
-          id: 4,
-          title: "Once Upon a Scoundrel",
-          desc: "Puncture wound without foreign body of unsp elbow, sequela",
-          color: "#ff5e5e",
-          date: "30-12-2021"
-        }, {
-          id: 5,
-          title: "Friend of Mine, A (Ein Freund von mir)",
-          desc: "Opera house as the place of occurrence of the external cause",
-          color: "#838fa4",
-          date: "30-12-2021"
-        }, {
-          id: 6,
-          title: "Code Name Coq Rouge",
-          desc: "Other cystostomy complication",
-          color: "#634cfa",
-          date: "30-12-2021"
-        }, 
-        {
-          id: 7,
-          title: "Young Girls of Rochefort, The (Demoiselles de Rochefort, Les)",
-          desc: "Disp fx of olecran pro w/o intartic extn l ulna, 7thH",
-          color: "#fb87e2",
-          date: "30-12-2021"
-        }, {
-          id: 8,
-          title: "Gen-Y Cops (Te jing xin ren lei 2) (Gen-X Cops 2: Metal Mayhem) (Metal Mayhem)",
-          desc: "Oth physl fx upper end of r tibia, subs for fx w routn heal",
-          color: "#ff5e5e",
-          date: "30-12-2021"
-        }, {
-          id: 9,
-          title: "Four Nights of a Dreamer (Quatre nuits d'un rêveur)",
-          desc: "Polycythemia vera",
-          color: "#53db89",
-          date: "30-12-2021"
-        }, {
-          id: 10,
-          title: "Machine Gun Kelly",
-          desc: "Palsy (spasm) of conjugate gaze",
-          color: "#4bb1f8",
-          date: "30-12-2021"
-        }
-      ]
+      value: {}
     }
   },
+  props : [
+    'id'
+  ],
+  async mounted() {
+
+    let id_task = this.id
+    let id_user = localStorage.getItem('id_user')
+
+    let result = await getTask({
+      id_user,
+      id_task
+    })
+
+    if(!result.data.data.length == 0) {
+      this.value = result.data.data[0]
+    }
+
+  },
   methods: {
-    toggleModal(){
-      this.showModal = !this.showModal
+    async markAsFinished(){
+      let id_task = this.id
+      let id_user = localStorage.getItem('id_user')
+
+      let result = await updateTask({
+        id_user,
+        id_task
+      })
+
+      this.value.done_task = 1
+
+      this.$emit('reload')
+
+    },
+    async delete_task() {
+      let result = await deleteTask({
+        id_task: this.id,
+        id_user: localStorage.getItem('id_user')
+      })
+
+      if(result.data.data.affectedRows == 1) {
+        alert("Tarea eliminada correctamente")
+        this.$emit('reload')
+
+      }
+
+    },
+    closeTask(){
+      this.$emit('closeTask')
     }
   }
 }
 </script>
 
-<style>
-main {
-  padding:10px;
-}
-
-.tasks {
+<style scoped>
+.modal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap:30px;
+  align-items: center;
 }
 
-.task {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 125px;
-  border-radius: 10px;
-  padding: 15px;
+.task-modal {
+  border-radius: 20px;
+  padding: 20px;
+  position: absolute;
+  width: 90%;
+  height: 50vh;
   color: white;
 }
 
-.task__title {
-  font-weight: bold;
+.task-modal > i {
+  font-size: 1.7rem;
+  color: white;
+  background: rgba(255, 255, 255, 0.356);
+  border-radius: 100%;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
 }
 
-@media (min-width: 450px) {
-  .task {
-    width: 200px;
-  }
+.task {
+  height: 100%;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-@media (min-width: 670px) {
-  .task {
-    width: 300px;
-  }
+.task button {
+  margin-top: 10px;
+  padding: 5px 20px;
+
 }
-
-
 </style>

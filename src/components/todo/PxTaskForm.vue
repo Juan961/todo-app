@@ -3,33 +3,32 @@
     <div class="task-modal">
       <i @click="closeModal" class='bx bx-x'></i>
 
-      <div class="input-group__main" :style="{background: task.color}">
-        <input type="text" maxlength="50" v-model="task.title" placeholder="Titulo">
+      <div class="input-group__main" :style="{background: task.color_task}">
+        <input type="text" maxlength="50" v-model="task.title_task" required placeholder="Title">
       </div>
 
       <div class="input-group__secondary">
         <div class="input-group">
-          <label for="">Descripcion</label>
-          <textarea name="" id="" v-model="task.desc" rows="5" maxlength="150"> </textarea>
+          <label for="">Description</label>
+          <textarea name="" id="" v-model="task.desc_task" rows="5" required maxlength="150"> </textarea>
           
         </div>
         <div class="input-group">
-          <label for="">Fecha</label>
-          <input type="date" v-model="task.date">
+          <label for="">Date</label>
+          <input type="date" v-model="task.date_task" required>
         </div>
         <div class="input-group">
           <label for="">Color</label>
           <div>
-            <input type="radio" name="color" v-model="task.color" value="#4bb1f8" checked>
-            <input type="radio" name="color" v-model="task.color" value="#53db89">
-            <input type="radio" name="color" v-model="task.color" value="#f98a4b">
-            <input type="radio" name="color" v-model="task.color" value="#ff5e5e">
-            <input type="radio" name="color" v-model="task.color" value="#838fa4">
-            <input type="radio" name="color" v-model="task.color" value="#634cfa">
-            <input type="radio" name="color" v-model="task.color" value="#fb87e2">
+            <input type="radio" name="color" v-model="task.color_task" value="#4bb1f8" checked>
+            <input type="radio" name="color" v-model="task.color_task" value="#53db89">
+            <input type="radio" name="color" v-model="task.color_task" value="#f98a4b">
+            <input type="radio" name="color" v-model="task.color_task" value="#ff5e5e">
+            <input type="radio" name="color" v-model="task.color_task" value="#838fa4">
+            <input type="radio" name="color" v-model="task.color_task" value="#634cfa">
+            <input type="radio" name="color" v-model="task.color_task" value="#fb87e2">
           </div>
           
-
         </div>
         
         <button @click="createTask">Create task</button>
@@ -40,21 +39,32 @@
 </template>
 
 <script>
+import { createTask } from '@/logic/tasks.logic.js'
+
 export default {
   name:"PxTaskForm",
   data(){
     return {
       task : {
-        title: '',
-        desc: '',
-        date: '',
-        color: "#4bb1f8"
+        title_task: '',
+        desc_task: '',
+        date_task: '',
+        color_task: "#4bb1f8",
+        id_user: localStorage.getItem('id_user')
       }
     }
   },
   methods: {
-    createTask(){
+    async createTask(){
+      
+      let result = await createTask(this.task)
 
+      if(result.data.data.affectedRows == 1) {
+        console.log("Creada")
+        this.$emit('reload')
+      } else {
+        alert("Error del servidor")
+      }
     },
     closeModal(){
       this.$emit('closeModal')
@@ -63,7 +73,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .modal {
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */

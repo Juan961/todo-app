@@ -9,6 +9,13 @@ export default {
   name: 'Login',
   components: {
     PxLoginForm
+  },
+  mounted(){
+    let user = localStorage.getItem('id_user')
+
+    if(user){
+      this.$router.push('/tasks')
+    }
   }
 }
 </script>

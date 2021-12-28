@@ -3,10 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import Login from '../views/Login.vue'
 import Signup from '../views/Signup.vue'
-
 import Tasks from '../views/Tasks.vue'
-import Task from '../views/Task.vue'
-
 import Error from '../views/Error.vue'
 
 const routes = [
@@ -27,12 +24,8 @@ const routes = [
   {
     path: '/tasks',
     name: 'Tasks',
-    component: Tasks
-  },
-  {
-    path: '/tasks/:id',
-    name: 'Task',
-    component: Task
+    component: Tasks,
+    meta: { requiresAuth: true }
   },
   {
     path: '/:catchAll(.*)',

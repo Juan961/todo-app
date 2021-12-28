@@ -1,6 +1,6 @@
 <template>
   <div class="new-task">
-    <span @click="openModal"> <i class='bx bx-plus plus-icon'></i> New Goal</span>
+    <span @click="openModal"> <i class='bx bx-plus plus-icon'></i> New Task</span>
   </div>
 </template>
 
