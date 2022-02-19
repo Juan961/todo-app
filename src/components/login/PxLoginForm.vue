@@ -1,10 +1,10 @@
 <template>
   <main>
     <form @submit.prevent="login">
-      <input v-model="form.email" type="email" placeholder="Correo">
-      <input v-model="form.password" type="password" placeholder="Contraseña">
-      <button type="submit">Entrar</button>
-      <router-link to="/signup">¿No tienes cuenta?</router-link>
+      <input v-model="form.email" type="email" placeholder="Email">
+      <input v-model="form.password" type="password" placeholder="Password">
+      <button type="submit">Login</button>
+      <router-link to="/signup">Don't have an account?</router-link>
     </form>
   </main>
 </template>

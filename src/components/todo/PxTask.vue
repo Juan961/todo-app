@@ -5,9 +5,9 @@
       <i @click="closeTask" class='bx bx-x'></i>
       <div class="task" >
         <h2>{{ value.title_task }}</h2>
-        <p>Description: {{ value.desc_task }} </p>
-        <p>Date: {{ value.date_task}} </p>
-        <p> {{value.done_task ? "Finished" : "Unfinished"}} </p>
+        <p> <strong>Description:</strong> {{ value.desc_task }} </p>
+        <p> <strong>Date:</strong> {{ value.date_task }} </p>
+        <p> <strong>{{value.done_task ? "Finished" : "Unfinished"}}</strong> </p>
         
         <button v-if="!value.done_task" @click="markAsFinished">Mark as finished</button>
 

@@ -1,11 +1,11 @@
 <template>
   <main>
     <form @submit.prevent="register">
-      <input v-model="form.name" type="text" placeholder="Nombre">
-      <input v-model="form.email" type="email" placeholder="Correo">
-      <input v-model="form.password" type="password" placeholder="Contraseña">
-      <button type="submit">Registrarse</button>
-      <router-link to="/login">¿Ya tienes cuenta?</router-link>
+      <input v-model="form.name" type="text" placeholder="Name">
+      <input v-model="form.email" type="email" placeholder="Email">
+      <input v-model="form.password" type="password" placeholder="Password">
+      <button type="submit">Register</button>
+      <router-link to="/login">Already have an account?</router-link>
     </form>
   </main>
 </template>
